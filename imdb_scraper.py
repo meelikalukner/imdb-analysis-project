@@ -65,7 +65,7 @@ def scrape_imdb(url):
 #Main execution
 if __name__ == "__main__":
     data = scrape_imdb(URL)
-    print(data)
+    print(data[:5])
     #Inserting data to database
     with engine.connect() as conn:
         for movie in data:
