@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 # Defining constants: user-agent for transparency and the URL I want to scrape
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (compatible; IMDBScraper/1.0; +https://github.com/meelikalukner; mailto:meelikalukner@gmail.com)'
+    'User-Agent': 'Mozilla/5.0 (compatible; IMDBScraper/1.0; +https://github.com/meelikalukner; mailto:meelikalukner@gmail.com)',
+    'Accept-Language': 'en-US,en;q=0.5' # Added in order to get the movie names in English, not Estonian 
 }
 URL = 'https://www.imdb.com/chart/top/'
 DATABASE_FILE = r"sqlite:///D:\Meelika\Proge\imdb analysis project\imdb_data.db"
@@ -66,4 +67,5 @@ def add_data_to_db(data, engine):
 #Main execution
 if __name__ == "__main__":
     data = scrape_imdb(URL)
+    #print(data[:5])
     add_data_to_db(data,engine)
