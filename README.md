@@ -1,0 +1,2 @@
+In this project I will scrape data from IMDB's Top 250 movies and store the data into a SQLite database.
+After scraping I will conduct analysis on the data on Jupyter Notebook and visualizing the data with Tableau.
