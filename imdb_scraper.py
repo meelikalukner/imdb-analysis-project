@@ -1,3 +1,8 @@
+'''This script scrapes the IMDB Top250 movies page and insert the data into an SQLite database table. 
+However, for some reason the script skipped movie nr 78. Instead of getting into the scraping logic,
+I just added default values for now and corrected the database manually, in order to save time and move
+on with the analysis project. '''
+
 from sqlalchemy import create_engine, MetaData, Table, insert
 import requests
 from bs4 import BeautifulSoup
@@ -34,15 +39,25 @@ def scrape_imdb(url):
     for movie_div in soup.select('div.sc-b85248f1-0'):
         title = movie_div.select_one('h3.ipc-title__text').text.strip() #Finding the movie title
         spans = movie_div.select('span.sc-b85248f1-6') #Finding spans where is the info about year, duration, rating and imdb rating
-    
-        if len(spans) < 3:  # Check if there are less than three spans
-            print(f"Skipped movie: {title} due to insufficient data.")
-            continue
-        
-        year = spans[0].text.strip()
-        duration = spans[1].text.strip()
-        rating = spans[2].text.strip()
-        imdb_rating = float(movie_div.select_one('span.ipc-rating-star.ipc-rating-star--base').text.strip())
+
+        # Default values
+        year = 0
+        duration = ""
+        rating = ""
+        imdb_rating = 0
+
+        if len(spans) >= 3:  # Check if there are less than three spans
+            year = spans[0].text.strip()
+            duration = spans[1].text.strip()
+            rating = spans[2].text.strip()
+
+            rating_element = movie_div.select_one('.ipc-rating-star--base')
+            if rating_element:
+                # Extracting the text from the element and removing any non-numeric characters
+                rating_string = rating_element['aria-label'].replace("IMDb rating: ", "")
+                imdb_rating = float(rating_string)
+        else:
+            print(f"Insufficient data for movie: {title}. Using default values.")
 
         movie_details.append({ #Creates a dictionary from the scraped data
             "title": title,
